@@ -7,9 +7,12 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import pandas as pd
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 import dash_daq as daq
+import dash_table
+
+import pandas as pd
 
 from scraper import amzscraper, fbscraper, twscraper
 
@@ -74,13 +77,28 @@ siaApp.layout = html.Div(style = {'backgroundColor': colors['background']}, chil
     
     dcc.Tabs(id = "tabs-styled-with-inline", value = 'scraper', children = [
         dcc.Tab(label = 'Scraper', value = 'scraper', style = tab_style, selected_style = tab_selected_style, children = [
+            html.Label('Please select Platform from the Dropdown', style = {'color': colors['text']}),
             html.Div([dcc.Dropdown(id = 'platform-input', options=[
                 {'label': 'Amazon', 'value': 'amazon'},
                 {'label': 'Facebook', 'value': 'facebook'},
                 {'label': 'Twitter', 'value': 'twitter'}],
-                                   value = 'amazon', style = {'color': colors['text']}),
-                      html.Button('Submit', id = 'button'),
-                      html.Div(id = 'platform-output', style = {'color': colors['text']})])
+                                   value = 'amazon', style = {'color': colors['text']})]),
+            html.Br(),
+            
+            html.Label('Please enter the Keyword here', style = {'color': colors['text']}),
+            html.Div(dcc.Textarea(id = 'keyword-input', placeholder = 'Type here', style = {'width': '100%'})),
+            html.Br(),
+            
+            html.Label('Please enter No. of Pages here', style = {'color': colors['text']}),
+            html.Div(daq.NumericInput(id = 'pages-input', min = 1, max = 1000, value = 10, size = 120), 
+                     style = {'color': colors['text']}),
+            html.Br(),
+            html.Div([dbc.Button('Submit', color = "primary", id = 'button', className = "mr-1", block = True),
+                      html.Span(id = "button-output", style={"vertical-align": "middle"}),
+                     ]),
+            html.Br(),
+            
+            html.Div(id = 'scraper-output', style = {'color': colors['text']})
         ]),
         dcc.Tab(label = 'Preprocessing', value = 'preprocessing', style = tab_style, selected_style = tab_selected_style),
         dcc.Tab(label = 'Features Extraction', value = 'feature_extraction', style = tab_style, selected_style = tab_selected_style),
@@ -114,16 +132,15 @@ def render_content(tab):
             html.H3('Include Visualization here')
         ])
 
-@siaApp.callback(Output('platform-output', 'children'),
+@siaApp.callback([Output('scraper-output', 'children'),Output('button-output', 'children')],
                  [Input('button', 'n_clicks')],
-                 [State('platform-input', 'value')])
-def update_output(n_clicks, value):
-    return 'The selected Platform is "{}" with keyword "" & No. of Pages are ""             and the button has been clicked {} times'.format(value, n_clicks)
+                 [State('platform-input', 'value'),State('keyword-input', 'value'), State('pages-input', 'value')])
+def update_output(n_clicks, platform, keyword, pages):
+    return 'The selected Platform is "{}" with keyword "{}" & No. of Pages are {}'.format(platform, keyword, pages),             'and the button has been clicked {} times'.format(n_clicks)
 
 
-# In[ ]:
+# In[7]:
 
 
 if __name__ == '__main__':
     siaApp.run_server()
-
