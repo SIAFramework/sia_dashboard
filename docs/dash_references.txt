@@ -1,0 +1,30 @@
+## Dash DAQ: dash_daq
+https://dash.plot.ly/dash-daq
+
+## Dash Logger
+https://www.pueschel.dev/python,/dash,/plotly/2019/06/28/dash-logs.html
+
+## Dash NumericInput
+https://dash.plot.ly/dash-daq/numericinput
+
+
+html.Label('Keyword Text'),
+            dcc.Textarea(placeholder = 'Please enter the Keyword here', style = {'width': '100%'}),
+            html.Label('No. of Pages'),
+            daq.NumericInput(min = 1, max = 1000, value = 100, size = 120),
+
+
+
+
+dcc.Dropdown(id = 'platform-input', options = [
+                    {'label': 'Amazon', 'value': 'amazon'},
+                    {'label': 'Facebook', 'value': 'facebook'},
+                    {'label': 'Twitter', 'value': 'twitter'}
+                ], value = 'amazon',
+                placeholder = 'Please select the Platform here')
+                
+
+
+# @siaApp.callback(Output('no-of-pages-output', 'children'),
+#               [Input('button', 'n_clicks')],
+#               [State('no-of-pages-input', 'value')])
